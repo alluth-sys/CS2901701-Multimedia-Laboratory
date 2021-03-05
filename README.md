@@ -1,3 +1,3 @@
-# Multimedia Laboratory CS2901701
+# CS2901701 Multimedia Laboratory 
 **LANG: C++ with OpenCV**
 1. RGB to greyscale w/o library 
