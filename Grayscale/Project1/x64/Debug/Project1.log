@@ -1,0 +1,11 @@
+﻿  example_0.cpp
+  example_1.cpp
+  example_2.cpp
+  example_3.cpp
+  example_4.cpp
+  example_5.cpp
+  example_6.cpp
+  practice_1.cpp
+C:\Users\B1081\Desktop\Grayscale\Project1\practice_1.cpp(11,13): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  Project1.vcxproj -> C:\Users\B1081\Desktop\Grayscale\x64\Debug\Project1.exe
