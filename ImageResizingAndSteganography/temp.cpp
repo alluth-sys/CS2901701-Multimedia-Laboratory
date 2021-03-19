@@ -4,44 +4,46 @@
 using namespace cv;
 using namespace std;
 
-void bilinearInterpolation(const Mat &src, Mat &dst, double dy, double dx)
-{
-    Size ssize = src.size();
-    Size dsize(ssize.width * dx, ssize.height * dy);
+void bilinear(const Mat& src, Mat& dst, double dy, double dx)
+{	
+	int original_width = src.rows;
+	int original_height = src.cols;
 
-    dst = Mat::zeros(dsize, CV_8UC3);
+	dst = Mat::zeros(original_width*dx,original_height*dy, CV_8UC3);
 
-    int drows = dsize.height, dcols = dsize.width;
-    for (int i = 0; i < drows; ++i)
-    {
+	for (int i = 0; i < dst.rows; ++i)
+	{
 
-        for (int j = 0; j < dcols; ++j)
-        {
-            double x = i / dx, y = j / dy;
-            int sx1 = floor(x), sy1 = floor(y);
-            int sx2 = sx1 + 1, sy2 = sy1 + 1;
+		for (int j = 0; j < dst.cols; ++j)
+		{
+			double x = i / dx, y = j / dy;
+			int x1 = floor(x), y1 = floor(y);
+			int x2 = x1 + 1, y2 = y1 + 1;
 
-            double d1 = x - sx1, d2 = sx2 - x;
-            double d3 = y - sy1, d4 = sy2 - y;
+			double d1 = x - x1, d2 = x2 - x;
+			double d3 = y - y1, d4 = y2 - y;
+			Vec3b result;
+			
+			if (x2 >= src.rows || y2 >= src.cols) {
+				result = src.at<Vec3b>(x1, y1);
+			}
+			else {
+				result = src.at<Vec3b>(x1, y1) * d2 * d4 + src.at<Vec3b>(x2, y1) * d1 * d4 + src.at<Vec3b>(x1, y2) * d2 * d3 + src.at<Vec3b>(x2, y2) * d1 * d3;
+			}
 
-            Vec2f target = Vec2f(sx1, sy1) * d2 * d4 +
-                           Vec2f(sx2, sy1) * d1 * d4 +
-                           Vec2f(sx1, sy2) * d2 * d3 +
-                           Vec2f(sx2, sy2) * d1 * d3;
-
-            //cout << src.at<Vec3b>(target.val[0], target.val[1]) << endl;
-            dst.at<Vec3b>(i, j) = src.at<Vec3b>(target.val[0], target.val[1]);
-        }
-    }
+			
+			dst.at<Vec3b>(i, j) = result;
+		}
+	}
 }
 
 int main()
 {
-    Mat src = imread("lenna.jpg");
-    Mat dst;
-    bilinearInterpolation(src, dst, 1, 10);
+	Mat src = imread("lenna.jpg");
+	Mat dst;
+	bilinear(src, dst, 2.5, 2.5);
 
-    imshow("src", src);
-    imshow("dst", dst);
-    waitKey();
+	imshow("src", src);
+	imshow("dst", dst);
+	waitKey();
 }
