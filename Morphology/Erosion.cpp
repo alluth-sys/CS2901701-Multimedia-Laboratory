@@ -2,7 +2,7 @@
 #include<iostream>
 using namespace std;
 using namespace cv;
-#define KSIZE 3
+#define KSIZE 5
 
 //RECTANGLE Structure element
 void initKernel(int kernel[][KSIZE]) {
@@ -21,7 +21,7 @@ void erodeFunc(Mat& img, Mat& dst,int kernel[][KSIZE]) {
 			int product[KSIZE * KSIZE] = { 0 };
 			int counter = 0;
 			bool flag = 1;
-			
+
 			for (int i = -offset; i <= offset; i++) {
 				for (int j = -offset; j <= offset; j++) {
 					product[counter++] = img.at<uchar>(y - j, x - i) * kernel[j + offset][i + offset];
@@ -34,26 +34,25 @@ void erodeFunc(Mat& img, Mat& dst,int kernel[][KSIZE]) {
 				}
 			}
 
-			flag ? dst.at<uchar>(y, x) = 1 : NULL;
+			flag ? dst.at<uchar>(y, x) = 255 : 0;
 		}
 	}
 }
 
 int main() {
-	Mat img = imread("image.jpg", 0);
-	double scale = 0.2;
-	resize(img, img, Size(0, 0), scale, scale);
+	Mat img = imread("image1.jpg", 0);
+	Mat src_inv;
 
 	Mat dst = Mat::zeros(img.rows, img.cols, CV_8UC1);
-	threshold(img, img, 127, 255, THRESH_BINARY_INV);
+	threshold(img, src_inv, 127, 255, THRESH_BINARY_INV);
 
 	int kernel[KSIZE][KSIZE];
 	initKernel(kernel);
 
-	erodeFunc(img, dst,kernel);
+	erodeFunc(src_inv, dst,kernel);
 	
 
-	imshow("origin_img", img);
+	imshow("origin_img", src_inv);
 	imshow("erode", dst);
 	waitKey(0);
 }
